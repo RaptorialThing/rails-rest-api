@@ -1,0 +1,298 @@
+---
+openapi: 3.0.3
+info:
+  title: api
+  version: 1.0.0
+servers: []
+paths:
+  "/auth/register":
+    post:
+      summary: create new user
+      tags:
+      - Authentication
+      parameters:
+      - name: email
+        in: query
+        required: false
+        schema:
+          type: string
+        example: nomads@nomads.com
+      - name: headers[Content-type]
+        in: query
+        required: false
+        schema:
+          type: object
+          properties:
+            Content-type:
+              type: string
+          required:
+          - Content-type
+        example:
+          Content-type: application/json
+      - name: password
+        in: query
+        required: false
+        schema:
+          type: string
+        example: nomads
+      - name: username
+        in: query
+        required: false
+        schema:
+          type: string
+        example: nomads
+      responses:
+        '201':
+          description: create new user with uniq email; return created user or error;
+            return jwt auth token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      username:
+                        type: string
+                      email:
+                        type: string
+                      password_digest:
+                        type: string
+                      age:
+                        nullable: true
+                      created_at:
+                        type: string
+                      updated_at:
+                        type: string
+                      jti:
+                        type: string
+                    required:
+                    - id
+                    - username
+                    - email
+                    - password_digest
+                    - age
+                    - created_at
+                    - updated_at
+                    - jti
+                  token:
+                    type: string
+                required:
+                - message
+                - user
+                - token
+              example:
+                message: User created successfully
+                user:
+                  id: 38
+                  username: nomads
+                  email: nomads@nomads.com
+                  password_digest: "$2a$04$ECggvxQeEBtkBIoot9i75O1AMCqIZlEjpCBHA8/D6.eEFrZCW/fOq"
+                  age: 
+                  created_at: '2023-10-28T16:35:15.224Z'
+                  updated_at: '2023-10-28T16:35:15.224Z'
+                  jti: 6f5d6829-9156-4b2b-aced-7d3e49ce0b92
+                token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozOCwiZXhwIjoxNjk5MTE1NzE1fQ.KapGKLpDeVHg6g7o1RRtrcAnkJd7mu_bsuWL9bcNElY
+        '409':
+          description: create new user with uniq email; return created user or error;
+            return jwt auth token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                - error
+              example:
+                error: email already exists
+  "/":
+    get:
+      summary: index
+      tags:
+      - Doc
+      responses:
+        '200':
+          description: returns api documentaion
+          content:
+            text/html:
+              schema:
+                type: string
+              example: |
+                <!DOCTYPE html>
+                <html lang="en">
+                  <head>
+                    <meta charset="utf-8" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1" />
+                    <meta
+                      name="description"
+                      content="SwaggerUI"
+                    />
+                    <title>SwaggerUI</title>
+                    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui.css" />
+                  </head>
+                  <body>
+                  <div id="swagger-ui"></div>
+                  <script src="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui-bundle.js" crossorigin></script>
+                  <script src="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui-standalone-preset.js" crossorigin></script>
+                  <script>
+                    window.onload = () => {
+                      window.ui = SwaggerUIBundle({
+                        url: 'openapi.yaml',
+                        dom_id: '#swagger-ui',
+                        presets: [
+                          SwaggerUIBundle.presets.apis,
+                          SwaggerUIStandalonePreset
+                        ],
+                        layout: "StandaloneLayout",
+                      });
+                    };
+                  </script>
+                  </body>
+                </html>
+  "/auth/login":
+    post:
+      summary: login as user
+      tags:
+      - Authentication
+      parameters:
+      - name: email
+        in: query
+        required: false
+        schema:
+          type: string
+        example: nomads@nomads.com
+      - name: headers[Content-type]
+        in: query
+        required: false
+        schema:
+          type: object
+          properties:
+            Content-type:
+              type: string
+          required:
+          - Content-type
+        example:
+          Content-type: application/json
+      - name: password
+        in: query
+        required: false
+        schema:
+          type: string
+        example: nomads
+      responses:
+        '200':
+          description: login as existing user by email
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      username:
+                        type: string
+                      email:
+                        type: string
+                      password_digest:
+                        type: string
+                      age:
+                        type: integer
+                      created_at:
+                        type: string
+                      updated_at:
+                        type: string
+                      jti:
+                        type: string
+                    required:
+                    - id
+                    - username
+                    - email
+                    - password_digest
+                    - age
+                    - created_at
+                    - updated_at
+                    - jti
+                  token:
+                    type: string
+                required:
+                - user
+                - token
+              example:
+                user:
+                  id: 37
+                  username: nomads
+                  email: nomads@nomads.com
+                  password_digest: "$2a$04$ciX/CrBVlan6Vl3ZWMpo/.wkmYR0j8fUsoUpuVPnXkQpUwFT9E5ku"
+                  age: 3
+                  created_at: '2023-10-28T16:35:15.193Z'
+                  updated_at: '2023-10-28T16:35:15.193Z'
+                  jti: f36d261f-6e04-4896-9a82-f229eb43b066
+                token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozNywiZXhwIjoxNjk5MTE1NzE1fQ.AltuyWhh257hxszwF_B8nCezQQu5lOy7NdpArBJYtYQ
+  "/api/v1/authors":
+    get:
+      summary: list all authors
+      tags:
+      - Api::V1::Author
+      parameters:
+      - name: headers[Authorization]
+        in: query
+        required: false
+        schema:
+          type: object
+          properties:
+            Authorization:
+              type: string
+          required:
+          - Authorization
+        example:
+          Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozNiwiZXhwIjoxNjk5MTE1NzE1fQ.dPvdcGFYe3LcR2tWpAooo5SR0D83uS6v6IyIZeRc1O0
+      responses:
+        '200':
+          description: list all authors ordered by default
+          content:
+            application/vnd.api+json:
+              schema:
+                type: string
+              example: '{"data":[{"id":"36","type":"authors","links":{"self":"http://www.example.com/api/v1/authors/36"},"attributes":{"username":"nomads"}}]}'
+  "/api/v1/users":
+    get:
+      summary: list all users
+      tags:
+      - Api::V1::User
+      responses:
+        '401':
+          description: list all users ordered by default
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                - error
+              example:
+                error: Unauthorized
+      parameters:
+      - name: headers[Authorization]
+        in: query
+        required: false
+        schema:
+          type: object
+          properties:
+            Authorization:
+              type: string
+          required:
+          - Authorization
+        example:
+          Authorization: bearer `12345`
