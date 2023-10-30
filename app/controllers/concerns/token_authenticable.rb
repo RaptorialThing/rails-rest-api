@@ -18,6 +18,7 @@ module TokenAuthenticable
       header = header.split(" ").last if header
       raise(UnauthorizedException) unless header
       decoded = jwt_decode(header)
+      raise(UnauthorizedException) unless decoded
       @current_user =User.find(decoded[:user_id])
 			raise(UnauthorizedException) unless @current_user
 	end

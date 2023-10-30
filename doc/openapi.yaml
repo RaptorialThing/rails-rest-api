@@ -49,55 +49,12 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  message:
-                    type: string
-                  user:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      username:
-                        type: string
-                      email:
-                        type: string
-                      password_digest:
-                        type: string
-                      age:
-                        nullable: true
-                      created_at:
-                        type: string
-                      updated_at:
-                        type: string
-                      jti:
-                        type: string
-                    required:
-                    - id
-                    - username
-                    - email
-                    - password_digest
-                    - age
-                    - created_at
-                    - updated_at
-                    - jti
-                  token:
-                    type: string
+                properties: {}
                 required:
                 - message
                 - user
                 - token
-              example:
-                message: User created successfully
-                user:
-                  id: 38
-                  username: nomads
-                  email: nomads@nomads.com
-                  password_digest: "$2a$04$ECggvxQeEBtkBIoot9i75O1AMCqIZlEjpCBHA8/D6.eEFrZCW/fOq"
-                  age: 
-                  created_at: '2023-10-28T16:35:15.224Z'
-                  updated_at: '2023-10-28T16:35:15.224Z'
-                  jti: 6f5d6829-9156-4b2b-aced-7d3e49ce0b92
-                token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozOCwiZXhwIjoxNjk5MTE1NzE1fQ.KapGKLpDeVHg6g7o1RRtrcAnkJd7mu_bsuWL9bcNElY
+              example: {}
         '409':
           description: create new user with uniq email; return created user or error;
             return jwt auth token
@@ -229,15 +186,15 @@ paths:
                 - token
               example:
                 user:
-                  id: 37
+                  id: 43
                   username: nomads
                   email: nomads@nomads.com
-                  password_digest: "$2a$04$ciX/CrBVlan6Vl3ZWMpo/.wkmYR0j8fUsoUpuVPnXkQpUwFT9E5ku"
+                  password_digest: "$2a$04$yq/C2X7RjNlNvg2elK2V5.Ng0rFr1LVBPncc0/jtHB6H.eEVPDEpi"
                   age: 3
-                  created_at: '2023-10-28T16:35:15.193Z'
-                  updated_at: '2023-10-28T16:35:15.193Z'
-                  jti: f36d261f-6e04-4896-9a82-f229eb43b066
-                token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozNywiZXhwIjoxNjk5MTE1NzE1fQ.AltuyWhh257hxszwF_B8nCezQQu5lOy7NdpArBJYtYQ
+                  created_at: '2023-10-30T12:37:49.601Z'
+                  updated_at: '2023-10-30T12:37:49.601Z'
+                  jti: 6cb5fea0-66d4-4e93-ae9b-c99041086f4b
+                token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo0MywiZXhwIjoxNjk5MzAzNjQwfQ.vPaTI8qeRMXa0za5BPbBNNmdCOKYLh4MUxUdcI0xkls
   "/api/v1/authors":
     get:
       summary: list all authors
@@ -255,7 +212,7 @@ paths:
           required:
           - Authorization
         example:
-          Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozNiwiZXhwIjoxNjk5MTE1NzE1fQ.dPvdcGFYe3LcR2tWpAooo5SR0D83uS6v6IyIZeRc1O0
+          Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo0MywiZXhwIjoxNjk5MzAzNjQwfQ.vPaTI8qeRMXa0za5BPbBNNmdCOKYLh4MUxUdcI0xkls
       responses:
         '200':
           description: list all authors ordered by default
@@ -263,7 +220,7 @@ paths:
             application/vnd.api+json:
               schema:
                 type: string
-              example: '{"data":[{"id":"36","type":"authors","links":{"self":"http://www.example.com/api/v1/authors/36"},"attributes":{"username":"nomads"}}]}'
+              example: '{"data":[]}'
   "/api/v1/users":
     get:
       summary: list all users
@@ -296,3 +253,60 @@ paths:
           - Authorization
         example:
           Authorization: bearer `12345`
+  "/api/v1/users/{user_id}/relationships/roles":
+    post:
+      summary: add  user`s role
+      tags:
+      - Api::V1::User
+      parameters:
+      - name: relationship
+        in: path
+        required: true
+        schema:
+          type: string
+        example: roles
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 43
+      responses:
+        '422':
+          description: add new record to users_roles if not exsits already
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                - error
+              example:
+                error: Role 100500 does not exists
+        '201':
+          description: add new record to users_roles if not exsits already
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                - message
+              example:
+                message: UserRole created successfully
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                role_id:
+                  type: string
+              required:
+              - role_id
+            example:
+              role_id: '100500'

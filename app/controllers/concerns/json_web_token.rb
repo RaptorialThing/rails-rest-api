@@ -9,7 +9,11 @@ module JsonWebToken
   end
 
   def jwt_decode(token)
+    begin
     decoded =JWT.decode(token,SECRET_KEY)[0]
     HashWithIndifferentAccess.new decoded
+    rescue JWT::DecodeError, JWT::ExpiredSignature
+      return nil
+    end
   end
 end
