@@ -1,5 +1,5 @@
 # README
-
+[deployed version](https://rsmine.fvds.ru/)
 [how to install](#how-to-install)
 [api usage](#api-usage)
 
