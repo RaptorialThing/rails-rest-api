@@ -49,12 +49,55 @@ paths:
             application/json:
               schema:
                 type: object
-                properties: {}
+                properties:
+                  message:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      username:
+                        type: string
+                      email:
+                        type: string
+                      password_digest:
+                        type: string
+                      age:
+                        nullable: true
+                      created_at:
+                        type: string
+                      updated_at:
+                        type: string
+                      jti:
+                        type: string
+                    required:
+                    - id
+                    - username
+                    - email
+                    - password_digest
+                    - age
+                    - created_at
+                    - updated_at
+                    - jti
+                  token:
+                    type: string
                 required:
                 - message
                 - user
                 - token
-              example: {}
+              example:
+                message: User created successfully
+                user:
+                  id: 4
+                  username: nomads
+                  email: nomads@nomads.com
+                  password_digest: "$2a$04$ZONTh7M2TUwoYxw83TUKH.Ra.OTRQ2VZOhGTisEJhq0kpKoAHs/DS"
+                  age: 
+                  created_at: '2023-10-31T19:50:23.046Z'
+                  updated_at: '2023-10-31T19:50:23.046Z'
+                  jti: c596b5f4-2b27-4efc-beaa-77ef28d775b6
+                token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo0LCJleHAiOjE2OTkzODY2MjN9.CZRDyA5vbG-HRng6F3f4L3lowULygRZplRTFMV8n1fI
         '409':
           description: create new user with uniq email; return created user or error;
             return jwt auth token
@@ -186,15 +229,15 @@ paths:
                 - token
               example:
                 user:
-                  id: 43
+                  id: 3
                   username: nomads
                   email: nomads@nomads.com
-                  password_digest: "$2a$04$yq/C2X7RjNlNvg2elK2V5.Ng0rFr1LVBPncc0/jtHB6H.eEVPDEpi"
+                  password_digest: "$2a$04$Hkd9r64dKpn1Y3FjQSY0Yug93oU96p26AXDo1TnX5tjFYn.emqTa."
                   age: 3
-                  created_at: '2023-10-30T12:37:49.601Z'
-                  updated_at: '2023-10-30T12:37:49.601Z'
-                  jti: 6cb5fea0-66d4-4e93-ae9b-c99041086f4b
-                token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo0MywiZXhwIjoxNjk5MzAzNjQwfQ.vPaTI8qeRMXa0za5BPbBNNmdCOKYLh4MUxUdcI0xkls
+                  created_at: '2023-10-31T19:50:23.015Z'
+                  updated_at: '2023-10-31T19:50:23.015Z'
+                  jti: edd17644-15b2-4473-9d88-d9e2423b0840
+                token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJleHAiOjE2OTkzODY2MjN9.2hLMK7WjTt0mNZSG4cHemvYMjFKSH4JG3M20JHX3gc0
   "/api/v1/authors":
     get:
       summary: list all authors
@@ -212,7 +255,7 @@ paths:
           required:
           - Authorization
         example:
-          Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo0MywiZXhwIjoxNjk5MzAzNjQwfQ.vPaTI8qeRMXa0za5BPbBNNmdCOKYLh4MUxUdcI0xkls
+          Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJleHAiOjE2OTkzODY2MjJ9.gy0BzeLOIPNw2b8MFrTZb63HQChXtFzzj6AoCCVnPJM
       responses:
         '200':
           description: list all authors ordered by default
@@ -220,7 +263,7 @@ paths:
             application/vnd.api+json:
               schema:
                 type: string
-              example: '{"data":[]}'
+              example: '{"data":[{"id":"2","type":"authors","links":{"self":"http://www.example.com/api/v1/authors/2"},"attributes":{"username":"nomads"}}]}'
   "/api/v1/users":
     get:
       summary: list all users
@@ -255,7 +298,7 @@ paths:
           Authorization: bearer `12345`
   "/api/v1/users/{user_id}/relationships/roles":
     post:
-      summary: add  user`s role
+      summary: roles
       tags:
       - Api::V1::User
       parameters:
@@ -270,10 +313,10 @@ paths:
         required: true
         schema:
           type: integer
-        example: 43
+        example: 7
       responses:
         '422':
-          description: add new record to users_roles if not exsits already
+          description: crud roles
           content:
             application/json:
               schema:
@@ -286,7 +329,7 @@ paths:
               example:
                 error: Role 100500 does not exists
         '201':
-          description: add new record to users_roles if not exsits already
+          description: crud roles
           content:
             application/json:
               schema:
@@ -310,3 +353,76 @@ paths:
               - role_id
             example:
               role_id: '100500'
+  "/api/v1/roles":
+    get:
+      summary: roles
+      tags:
+      - Api::V1::Role
+      responses:
+        '200':
+          description: crud roles
+          content:
+            application/vnd.api+json:
+              schema:
+                type: string
+              example: '{"data":[{"id":"9","type":"roles","links":{"self":"http://www.example.com/api/v1/roles/9"},"attributes":{"name":"author"},"relationships":{"user-role":{"links":{"self":"http://www.example.com/api/v1/roles/9/relationships/user-role","related":"http://www.example.com/api/v1/roles/9/user-role"}},"users":{"links":{"self":"http://www.example.com/api/v1/roles/9/relationships/users","related":"http://www.example.com/api/v1/roles/9/users"}}}}]}'
+    post:
+      summary: roles
+      tags:
+      - Api::V1::Role
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                    attributes:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                      required:
+                      - name
+                  required:
+                  - type
+                  - attributes
+              required:
+              - data
+            example:
+              data:
+                type: roles
+                attributes:
+                  name: test
+      responses:
+        '201':
+          description: crud roles
+          content:
+            application/vnd.api+json:
+              schema:
+                type: string
+              example: '{"data":{"id":"8","type":"roles","links":{"self":"http://www.example.com/api/v1/roles/8"},"attributes":{"name":"test"},"relationships":{"user-role":{"links":{"self":"http://www.example.com/api/v1/roles/8/relationships/user-role","related":"http://www.example.com/api/v1/roles/8/user-role"}},"users":{"links":{"self":"http://www.example.com/api/v1/roles/8/relationships/users","related":"http://www.example.com/api/v1/roles/8/users"}}}}}'
+  "/api/v1/roles/{id}":
+    delete:
+      summary: roles
+      tags:
+      - Api::V1::Role
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 10
+      responses:
+        '204':
+          description: crud roles
+          content:
+            '':
+              schema:
+                type: string
+              example: ''

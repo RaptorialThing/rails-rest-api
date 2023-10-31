@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe "Roles", type: :request do
   describe "POST  /api/v1/users/:user_id/relationships/roles", openapi: {
-    summary: 'add  user`s role',
-    description: 'add new record to users_roles if not exsits already'
+    summary: 'roles',
+    description: 'crud roles'
   } do
 
     let(:auth) {Authentication::Authentication.new}
@@ -11,9 +11,9 @@ RSpec.describe "Roles", type: :request do
     let(:user_id) {auth.user.id}
     let(:role_id) {auth.role.id}
     it "add new user`s role" do
-
+      role = create(:admin)
       post api_v1_user_relationships_roles_url(user_id), params: {
-        "role_id": "#{role_id}"
+        "role_id": "#{role.id}"
       }, headers: {
         "Authorization": "bearer #{token}"
       }
@@ -29,5 +29,42 @@ RSpec.describe "Roles", type: :request do
       }
       expect(response.status).to eq(422)
     end
+
+    it "should return all roles" do
+
+      get  api_v1_roles_path, params: {},
+      headers: {
+        "Authorization": "bearer #{token}"
+      }
+      expect(response.status).to eq(200)
+    end
+
+    it "should create new role" do
+
+      post api_v1_roles_path, params: '{ "data":{"type":"roles", "attributes":{"name":"test"}}}',
+      headers: {
+        "Content-type": "application/vnd.api+json",
+        "Authorization": "bearer #{token}"
+      }
+      expect(response.status).to eq(201)
+    end
+
+    it "should return one role" do
+      get api_v1_roles_url(role_id), params: {},
+      headers: {
+         "Authorization": "bearer #{token}"
+      }
+      expect(response.status).to eq(200)
+    end
+
+    it "should delete the role" do
+      delete_role = create(:admin)
+      delete "/api/v1/roles/#{delete_role.id}", params: {},
+      headers: {
+        "Authorization": "bearer #{token}"
+      }
+      expect(response.status).to eq(204)
+    end
+
   end
 end

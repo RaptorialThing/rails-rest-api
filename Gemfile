@@ -47,13 +47,14 @@ group :development, :test do
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
   gem 'json_matchers'
   gem "rspec-rails"
-  gem 'rspec-openapi'
+  gem "rspec-openapi"
+  gem "faker"
+  gem "factory_bot_rails"
+  gem "database_cleaner"
 end
 
 group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
-  gem "faker"
-  gem "factory_bot_rails"
 end
 
