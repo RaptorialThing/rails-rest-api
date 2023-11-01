@@ -37,8 +37,12 @@ class Api::V1::AuthorsController < ApplicationController
   def destroy
     #authorize_roles!(["admin"])
 
-    role_id = Role.where(name: "author").first.id
-    @author = UserRole.where("user_id =? and role_id =?", params[:id],role_id).each{
+    role = Role.find_by(name: "author")
+    unless role
+      render json:  {message: "author role not exists yet" }
+      return
+    end
+    @author = UserRole.where("user_id =? and role_id =?", params[:id],role.id).each{
       |user_role| user_role.destroy }
     render json: {message: "author destroyed; user #{params[:id]} not author now" }
   end

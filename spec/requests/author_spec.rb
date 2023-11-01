@@ -6,7 +6,8 @@ RSpec.describe "Authors", type: :request do
     description: 'list all authors ordered by default'
   } do
 
-    let(:token) {Authentication::Authentication.new.generate_token}
+    let(:auth) {Authentication::Authentication.new}
+    let(:token) {auth.generate_token}
     #remove/close this route in prod
     it "returns a list of authors" do
 
@@ -19,17 +20,65 @@ RSpec.describe "Authors", type: :request do
   end
   describe "POST /api/v1/users/:user_id/relationships/roles", openapi: {
     summary: 'set user role',
-    description: 'set users_roles new record with user_id, role_id'
+    description: 'create user`s role'
   } ,  type: :request do
-    let(:token) {Authentication::Authentication.new.generate_token}
+    let(:auth) {Authentication::Authentication.new}
+    let(:token) {auth.generate_token}
+    let(:user) {create(:user)}
+    let(:role) {create(:author)}
       it "make user author" do
 
-      post api_v1_user_relationships_roles_url(User.first.id), params: {
-
-      }, headers: {
+      post "/api/v1/roles/#{role.id}/relationships/users", params:
+     '{"data":[{"type": "users","id":'+"#{user.id}"+'}]}', headers: {
+        "Content-type": "application/vnd.api+json",
         "Authorization": "bearer #{token}"
       }
-      expect(response.status).to eq(201)
-    end
+      expect(response.status).to eq(204)
+  end
+
+  describe "GET /api/v1/users/:user_id/relationships/roles", openapi: {
+    summary: 'get user role',
+    description: 'get user`s role'
+  } ,  type: :request do
+    let(:auth) {Authentication::Authentication.new}
+    let(:token) {auth.generate_token}
+    let(:role) {create(:author)}
+      it "get user`s role" do
+
+      get "/api/v1/roles/#{role.id}/relationships/users", params:
+     {}, headers: {
+        "Authorization": "bearer #{token}"
+      }
+      expect(response.status).to eq(200)
+      end
+  end
+
+
+  describe "DELETE /api/v1/users/:user_id/relationships/roles", openapi: {
+    summary: 'unset user role',
+    description: 'remove user`s role'
+  } ,  type: :request do
+    let(:auth) {Authentication::Authentication.new}
+    let(:token) {auth.generate_token}
+    let(:user) {create(:user)}
+    let(:role) {create(:author)}
+      it "make user author" do
+
+      post "/api/v1/roles/#{role.id}/relationships/users", params:
+     '{"data":[{"type": "users","id":'+"#{user.id}"+'}]}', headers: {
+        "Content-type": "application/vnd.api+json",
+        "Authorization": "bearer #{token}"
+      }
+
+      delete "/api/v1/roles/#{role.id}/relationships/users", params:
+     '{"data":[{"type": "users","id":'+"#{user.id}"+'}]}', headers: {
+        "Content-type": "application/vnd.api+json",
+        "Authorization": "bearer #{token}"
+      }
+      expect(response.status).to eq(204)
+      end
+  end
+
+
   end
 end

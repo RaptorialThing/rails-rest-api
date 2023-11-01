@@ -5,6 +5,308 @@ info:
   version: 1.0.0
 servers: []
 paths:
+  "/api/v1/authors":
+    get:
+      summary: list all authors
+      tags:
+      - Api::V1::Author
+      parameters:
+      - name: headers[Authorization]
+        in: query
+        required: false
+        schema:
+          type: object
+          properties:
+            Authorization:
+              type: string
+          required:
+          - Authorization
+        example:
+          Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJleHAiOjE2OTk0NjI1MzN9.g8U7T3y3vZFf077DTyjjvUWg_4BlyNfW_YW2UeH6OxI
+      responses:
+        '200':
+          description: list all authors ordered by default
+          content:
+            application/vnd.api+json:
+              schema:
+                type: string
+              example: '{"data":[{"id":"2","type":"authors","links":{"self":"http://www.example.com/api/v1/authors/2"},"attributes":{"username":"nomads"}}]}'
+  "/api/v1/roles/{role_id}/relationships/users":
+    post:
+      summary: set user role
+      tags:
+      - Api::V1::Role
+      parameters:
+      - name: relationship
+        in: path
+        required: true
+        schema:
+          type: string
+        example: users
+      - name: role_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 3
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      id:
+                        type: integer
+                    required:
+                    - type
+                    - id
+              required:
+              - data
+            example:
+              data:
+              - type: users
+                id: 3
+      responses:
+        '204':
+          description: create user`s role
+          content:
+            '':
+              schema:
+                type: string
+              example: ''
+    get:
+      summary: get user role
+      tags:
+      - Api::V1::Role
+      parameters:
+      - name: relationship
+        in: path
+        required: true
+        schema:
+          type: string
+        example: users
+      - name: role_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 5
+      responses:
+        '200':
+          description: get user`s role
+          content:
+            application/vnd.api+json:
+              schema:
+                type: string
+              example: '{"data":[],"links":{"self":"http://www.example.com/api/v1/roles/5/relationships/users","related":"http://www.example.com/api/v1/roles/5/users"}}'
+    delete:
+      summary: unset user role
+      tags:
+      - Api::V1::Role
+      parameters:
+      - name: relationship
+        in: path
+        required: true
+        schema:
+          type: string
+        example: users
+      - name: role_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 7
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      id:
+                        type: integer
+                    required:
+                    - type
+                    - id
+              required:
+              - data
+            example:
+              data:
+              - type: users
+                id: 6
+      responses:
+        '204':
+          description: remove user`s role
+          content:
+            '':
+              schema:
+                type: string
+              example: ''
+  "/":
+    get:
+      summary: index
+      tags:
+      - Doc
+      responses:
+        '200':
+          description: returns api documentaion
+          content:
+            text/html:
+              schema:
+                type: string
+              example: |
+                <!DOCTYPE html>
+                <html lang="en">
+                  <head>
+                    <meta charset="utf-8" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1" />
+                    <meta
+                      name="description"
+                      content="SwaggerUI"
+                    />
+                    <title>SwaggerUI</title>
+                    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui.css" />
+                  </head>
+                  <body>
+                  <div id="swagger-ui"></div>
+                  <script src="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui-bundle.js" crossorigin></script>
+                  <script src="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui-standalone-preset.js" crossorigin></script>
+                  <script>
+                    window.onload = () => {
+                      window.ui = SwaggerUIBundle({
+                        url: 'openapi.yaml',
+                        dom_id: '#swagger-ui',
+                        presets: [
+                          SwaggerUIBundle.presets.apis,
+                          SwaggerUIStandalonePreset
+                        ],
+                        layout: "StandaloneLayout",
+                      });
+                    };
+                  </script>
+                  </body>
+                </html>
+  "/api/v1/users":
+    get:
+      summary: unauthorized
+      tags:
+      - Api::V1::User
+      responses:
+        '401':
+          description: does not return users if unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                - error
+              example:
+                error: Unauthorized
+        '200':
+          description: list all users ordered by default
+          content:
+            application/vnd.api+json:
+              schema:
+                type: string
+              example: '{"data":[{"id":"18","type":"users","links":{"self":"http://www.example.com/api/v1/users/18"},"attributes":{"username":"nomads"},"relationships":{"user-role":{"links":{"self":"http://www.example.com/api/v1/users/18/relationships/user-role","related":"http://www.example.com/api/v1/users/18/user-role"}},"roles":{"links":{"self":"http://www.example.com/api/v1/users/18/relationships/roles","related":"http://www.example.com/api/v1/users/18/roles"}}}}]}'
+  "/auth/login":
+    post:
+      summary: login as user
+      tags:
+      - Authentication
+      parameters:
+      - name: email
+        in: query
+        required: false
+        schema:
+          type: string
+        example: nomads@nomads.com
+      - name: headers[Content-type]
+        in: query
+        required: false
+        schema:
+          type: object
+          properties:
+            Content-type:
+              type: string
+          required:
+          - Content-type
+        example:
+          Content-type: application/json
+      - name: password
+        in: query
+        required: false
+        schema:
+          type: string
+        example: nomads
+      responses:
+        '200':
+          description: login as existing user by email
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      username:
+                        type: string
+                      email:
+                        type: string
+                      password_digest:
+                        type: string
+                      age:
+                        type: integer
+                      created_at:
+                        type: string
+                      updated_at:
+                        type: string
+                      jti:
+                        type: string
+                    required:
+                    - id
+                    - username
+                    - email
+                    - password_digest
+                    - age
+                    - created_at
+                    - updated_at
+                    - jti
+                  token:
+                    type: string
+                required:
+                - user
+                - token
+              example:
+                user:
+                  id: 8
+                  username: nomads
+                  email: nomads@nomads.com
+                  password_digest: "$2a$04$3HWijbgwUTYnhrt5IrFTTucMOkJl5lWv8mDZ/cj.9nE3GPUC4AuKm"
+                  age: 3
+                  created_at: '2023-11-01T16:55:33.489Z'
+                  updated_at: '2023-11-01T16:55:33.489Z'
+                  jti: 72f1a3af-7c49-42ba-ab2d-d743d979af80
+                token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo4LCJleHAiOjE2OTk0NjI1MzN9.s2yqPi-XpkGxytZtQGic_PBM3FlplenxWMZcoJtq_Q8
   "/auth/register":
     post:
       summary: create new user
@@ -89,15 +391,15 @@ paths:
               example:
                 message: User created successfully
                 user:
-                  id: 4
+                  id: 9
                   username: nomads
                   email: nomads@nomads.com
-                  password_digest: "$2a$04$ZONTh7M2TUwoYxw83TUKH.Ra.OTRQ2VZOhGTisEJhq0kpKoAHs/DS"
+                  password_digest: "$2a$04$3IBoPH31Yue/djVKwIpZOuoJe.5dvyAUn7vmmAgqmBjCM4w7wmhU2"
                   age: 
-                  created_at: '2023-10-31T19:50:23.046Z'
-                  updated_at: '2023-10-31T19:50:23.046Z'
-                  jti: c596b5f4-2b27-4efc-beaa-77ef28d775b6
-                token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo0LCJleHAiOjE2OTkzODY2MjN9.CZRDyA5vbG-HRng6F3f4L3lowULygRZplRTFMV8n1fI
+                  created_at: '2023-11-01T16:55:33.520Z'
+                  updated_at: '2023-11-01T16:55:33.520Z'
+                  jti: f422f77b-991c-41e0-a82f-db72a8d0d003
+                token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo5LCJleHAiOjE2OTk0NjI1MzN9.7xExOPEclbZOsq11PmVA4Fo955YmzQux08NFd8a73Vw
         '409':
           description: create new user with uniq email; return created user or error;
             return jwt auth token
@@ -112,190 +414,6 @@ paths:
                 - error
               example:
                 error: email already exists
-  "/":
-    get:
-      summary: index
-      tags:
-      - Doc
-      responses:
-        '200':
-          description: returns api documentaion
-          content:
-            text/html:
-              schema:
-                type: string
-              example: |
-                <!DOCTYPE html>
-                <html lang="en">
-                  <head>
-                    <meta charset="utf-8" />
-                    <meta name="viewport" content="width=device-width, initial-scale=1" />
-                    <meta
-                      name="description"
-                      content="SwaggerUI"
-                    />
-                    <title>SwaggerUI</title>
-                    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui.css" />
-                  </head>
-                  <body>
-                  <div id="swagger-ui"></div>
-                  <script src="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui-bundle.js" crossorigin></script>
-                  <script src="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui-standalone-preset.js" crossorigin></script>
-                  <script>
-                    window.onload = () => {
-                      window.ui = SwaggerUIBundle({
-                        url: 'openapi.yaml',
-                        dom_id: '#swagger-ui',
-                        presets: [
-                          SwaggerUIBundle.presets.apis,
-                          SwaggerUIStandalonePreset
-                        ],
-                        layout: "StandaloneLayout",
-                      });
-                    };
-                  </script>
-                  </body>
-                </html>
-  "/auth/login":
-    post:
-      summary: login as user
-      tags:
-      - Authentication
-      parameters:
-      - name: email
-        in: query
-        required: false
-        schema:
-          type: string
-        example: nomads@nomads.com
-      - name: headers[Content-type]
-        in: query
-        required: false
-        schema:
-          type: object
-          properties:
-            Content-type:
-              type: string
-          required:
-          - Content-type
-        example:
-          Content-type: application/json
-      - name: password
-        in: query
-        required: false
-        schema:
-          type: string
-        example: nomads
-      responses:
-        '200':
-          description: login as existing user by email
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  user:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      username:
-                        type: string
-                      email:
-                        type: string
-                      password_digest:
-                        type: string
-                      age:
-                        type: integer
-                      created_at:
-                        type: string
-                      updated_at:
-                        type: string
-                      jti:
-                        type: string
-                    required:
-                    - id
-                    - username
-                    - email
-                    - password_digest
-                    - age
-                    - created_at
-                    - updated_at
-                    - jti
-                  token:
-                    type: string
-                required:
-                - user
-                - token
-              example:
-                user:
-                  id: 3
-                  username: nomads
-                  email: nomads@nomads.com
-                  password_digest: "$2a$04$Hkd9r64dKpn1Y3FjQSY0Yug93oU96p26AXDo1TnX5tjFYn.emqTa."
-                  age: 3
-                  created_at: '2023-10-31T19:50:23.015Z'
-                  updated_at: '2023-10-31T19:50:23.015Z'
-                  jti: edd17644-15b2-4473-9d88-d9e2423b0840
-                token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJleHAiOjE2OTkzODY2MjN9.2hLMK7WjTt0mNZSG4cHemvYMjFKSH4JG3M20JHX3gc0
-  "/api/v1/authors":
-    get:
-      summary: list all authors
-      tags:
-      - Api::V1::Author
-      parameters:
-      - name: headers[Authorization]
-        in: query
-        required: false
-        schema:
-          type: object
-          properties:
-            Authorization:
-              type: string
-          required:
-          - Authorization
-        example:
-          Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJleHAiOjE2OTkzODY2MjJ9.gy0BzeLOIPNw2b8MFrTZb63HQChXtFzzj6AoCCVnPJM
-      responses:
-        '200':
-          description: list all authors ordered by default
-          content:
-            application/vnd.api+json:
-              schema:
-                type: string
-              example: '{"data":[{"id":"2","type":"authors","links":{"self":"http://www.example.com/api/v1/authors/2"},"attributes":{"username":"nomads"}}]}'
-  "/api/v1/users":
-    get:
-      summary: list all users
-      tags:
-      - Api::V1::User
-      responses:
-        '401':
-          description: list all users ordered by default
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                required:
-                - error
-              example:
-                error: Unauthorized
-      parameters:
-      - name: headers[Authorization]
-        in: query
-        required: false
-        schema:
-          type: object
-          properties:
-            Authorization:
-              type: string
-          required:
-          - Authorization
-        example:
-          Authorization: bearer `12345`
   "/api/v1/users/{user_id}/relationships/roles":
     post:
       summary: roles
@@ -313,21 +431,20 @@ paths:
         required: true
         schema:
           type: integer
-        example: 7
+        example: 12
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                role_id:
+                  type: string
+              required:
+              - role_id
+            example:
+              role_id: '100500'
       responses:
-        '422':
-          description: crud roles
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                required:
-                - error
-              example:
-                error: Role 100500 does not exists
         '201':
           description: crud roles
           content:
@@ -341,18 +458,19 @@ paths:
                 - message
               example:
                 message: UserRole created successfully
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                role_id:
-                  type: string
-              required:
-              - role_id
-            example:
-              role_id: '100500'
+        '422':
+          description: crud roles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                - error
+              example:
+                error: Role 100500 does not exists
   "/api/v1/roles":
     get:
       summary: roles
@@ -365,7 +483,7 @@ paths:
             application/vnd.api+json:
               schema:
                 type: string
-              example: '{"data":[{"id":"9","type":"roles","links":{"self":"http://www.example.com/api/v1/roles/9"},"attributes":{"name":"author"},"relationships":{"user-role":{"links":{"self":"http://www.example.com/api/v1/roles/9/relationships/user-role","related":"http://www.example.com/api/v1/roles/9/user-role"}},"users":{"links":{"self":"http://www.example.com/api/v1/roles/9/relationships/users","related":"http://www.example.com/api/v1/roles/9/users"}}}}]}'
+              example: '{"data":[{"id":"15","type":"roles","links":{"self":"http://www.example.com/api/v1/roles/15"},"attributes":{"name":"user"},"relationships":{"user-role":{"links":{"self":"http://www.example.com/api/v1/roles/15/relationships/user-role","related":"http://www.example.com/api/v1/roles/15/user-role"}},"users":{"links":{"self":"http://www.example.com/api/v1/roles/15/relationships/users","related":"http://www.example.com/api/v1/roles/15/users"}}}}]}'
     post:
       summary: roles
       tags:
@@ -397,15 +515,21 @@ paths:
               data:
                 type: roles
                 attributes:
-                  name: test
+                  name: rspec
       responses:
         '201':
           description: crud roles
           content:
-            application/vnd.api+json:
+            application/json:
               schema:
-                type: string
-              example: '{"data":{"id":"8","type":"roles","links":{"self":"http://www.example.com/api/v1/roles/8"},"attributes":{"name":"test"},"relationships":{"user-role":{"links":{"self":"http://www.example.com/api/v1/roles/8/relationships/user-role","related":"http://www.example.com/api/v1/roles/8/user-role"}},"users":{"links":{"self":"http://www.example.com/api/v1/roles/8/relationships/users","related":"http://www.example.com/api/v1/roles/8/users"}}}}}'
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                - message
+              example:
+                message: Role rspec created successfully
   "/api/v1/roles/{id}":
     delete:
       summary: roles
@@ -417,7 +541,7 @@ paths:
         required: true
         schema:
           type: integer
-        example: 10
+        example: 16
       responses:
         '204':
           description: crud roles
@@ -426,3 +550,35 @@ paths:
               schema:
                 type: string
               example: ''
+  "/api/v1/users/{user_id}/roles":
+    get:
+      summary: user role
+      tags:
+      - Api::V1::Role
+      parameters:
+      - name: relationship
+        in: path
+        required: true
+        schema:
+          type: string
+        example: roles
+      - name: source
+        in: path
+        required: true
+        schema:
+          type: string
+        example: api/v1/users
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 17
+      responses:
+        '200':
+          description: user role
+          content:
+            application/vnd.api+json:
+              schema:
+                type: string
+              example: '{"data":[{"id":"18","type":"roles","links":{"self":"http://www.example.com/api/v1/roles/18"},"attributes":{"name":"user"},"relationships":{"user-role":{"links":{"self":"http://www.example.com/api/v1/roles/18/relationships/user-role","related":"http://www.example.com/api/v1/roles/18/user-role"}},"users":{"links":{"self":"http://www.example.com/api/v1/roles/18/relationships/users","related":"http://www.example.com/api/v1/roles/18/users"}}}}]}'

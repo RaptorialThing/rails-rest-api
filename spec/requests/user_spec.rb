@@ -1,19 +1,28 @@
 require 'rails_helper'
 
 RSpec.describe "Users", type: :request do
-  describe "GET /index", openapi: {
+  describe "GET /api/v1/users", openapi: {
     summary: 'list all users',
-    description: 'list all users ordered by default'
+    description: 'list all users ordered by default',
   } do
     #remove/close this route in prod
+    let(:auth) {Authentication::Authentication.new}
+    let(:token) {auth.generate_token}
     it "returns a list of users" do
-      get api_v1_users_path params: {}, headers: { Authorization: "bearer `12345`"}
+      get api_v1_users_url, params: {}, headers: { "Authorization": "bearer #{token}"}
       expect(response.status).to eq(200)
     end
+  end
 
+
+  describe "GET /api/v1/users", openapi: {
+    summary: 'unauthorized',
+    description: 'does not return users if unauthorized',
+  } do
     it "does not return users if unauthorized" do
       get api_v1_users_path
-      expect(response.status).to eq(200) #401
+      expect(response.status).to eq(401)
     end
   end
+
 end

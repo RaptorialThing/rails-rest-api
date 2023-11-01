@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "Roles", type: :request do
-  describe "POST  /api/v1/users/:user_id/relationships/roles", openapi: {
+  describe "crud roles", openapi: {
     summary: 'roles',
     description: 'crud roles'
   } do
@@ -41,7 +41,7 @@ RSpec.describe "Roles", type: :request do
 
     it "should create new role" do
 
-      post api_v1_roles_path, params: '{ "data":{"type":"roles", "attributes":{"name":"test"}}}',
+      post api_v1_roles_path, params: '{ "data":{"type":"roles", "attributes":{"name":"rspec"}}}',
       headers: {
         "Content-type": "application/vnd.api+json",
         "Authorization": "bearer #{token}"
@@ -59,7 +59,7 @@ RSpec.describe "Roles", type: :request do
 
     it "should delete the role" do
       delete_role = create(:admin)
-      delete "/api/v1/roles/#{delete_role.id}", params: {},
+      delete "/api/v1/roles/#{delete_role.id}" , params: {},
       headers: {
         "Authorization": "bearer #{token}"
       }
