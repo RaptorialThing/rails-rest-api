@@ -22,7 +22,7 @@ paths:
           required:
           - Authorization
         example:
-          Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJleHAiOjE2OTk0NjI1MzN9.g8U7T3y3vZFf077DTyjjvUWg_4BlyNfW_YW2UeH6OxI
+          Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJleHAiOjE2OTk2MTk5MTd9.z7DrpUv1eI6AS3DEv10lOzqEXIBLx6UFeG9zNkHdeWg
       responses:
         '200':
           description: list all authors ordered by default
@@ -155,6 +155,45 @@ paths:
               schema:
                 type: string
               example: ''
+  "/api/v1/users":
+    get:
+      summary: unauthorized
+      tags:
+      - Api::V1::User
+      responses:
+        '200':
+          description: list all users ordered by default
+          content:
+            application/vnd.api+json:
+              schema:
+                type: string
+              example: '{"data":[{"id":"19","type":"users","links":{"self":"http://www.example.com/api/v1/users/19"},"attributes":{"username":"nomad"},"relationships":{"user-role":{"links":{"self":"http://www.example.com/api/v1/users/19/relationships/user-role","related":"http://www.example.com/api/v1/users/19/user-role"}},"roles":{"links":{"self":"http://www.example.com/api/v1/users/19/relationships/roles","related":"http://www.example.com/api/v1/users/19/roles"}}}}]}'
+        '403':
+          description: does not return users if user does not have role admin or author
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                - error
+              example:
+                error: Forbidden
+        '401':
+          description: does not return users if unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                - error
+              example:
+                error: Unauthorized
   "/":
     get:
       summary: index
@@ -199,32 +238,6 @@ paths:
                   </script>
                   </body>
                 </html>
-  "/api/v1/users":
-    get:
-      summary: unauthorized
-      tags:
-      - Api::V1::User
-      responses:
-        '401':
-          description: does not return users if unauthorized
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                required:
-                - error
-              example:
-                error: Unauthorized
-        '200':
-          description: list all users ordered by default
-          content:
-            application/vnd.api+json:
-              schema:
-                type: string
-              example: '{"data":[{"id":"18","type":"users","links":{"self":"http://www.example.com/api/v1/users/18"},"attributes":{"username":"nomads"},"relationships":{"user-role":{"links":{"self":"http://www.example.com/api/v1/users/18/relationships/user-role","related":"http://www.example.com/api/v1/users/18/user-role"}},"roles":{"links":{"self":"http://www.example.com/api/v1/users/18/relationships/roles","related":"http://www.example.com/api/v1/users/18/roles"}}}}]}'
   "/auth/login":
     post:
       summary: login as user
@@ -298,15 +311,15 @@ paths:
                 - token
               example:
                 user:
-                  id: 8
+                  id: 10
                   username: nomads
                   email: nomads@nomads.com
-                  password_digest: "$2a$04$3HWijbgwUTYnhrt5IrFTTucMOkJl5lWv8mDZ/cj.9nE3GPUC4AuKm"
+                  password_digest: "$2a$04$HMpmaVUoz3nzQcKCl4OadOI6ncnu.uEtOjIBsJsUwx.G0rJGZcAx6"
                   age: 3
-                  created_at: '2023-11-01T16:55:33.489Z'
-                  updated_at: '2023-11-01T16:55:33.489Z'
-                  jti: 72f1a3af-7c49-42ba-ab2d-d743d979af80
-                token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo4LCJleHAiOjE2OTk0NjI1MzN9.s2yqPi-XpkGxytZtQGic_PBM3FlplenxWMZcoJtq_Q8
+                  created_at: '2023-11-03T12:38:37.661Z'
+                  updated_at: '2023-11-03T12:38:37.661Z'
+                  jti: 2fb3ab42-9733-4bc7-96a4-5c4ef688f563
+                token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMCwiZXhwIjoxNjk5NjE5OTE3fQ.u-4neZy25WZ6njGUMLHZoIzegAmOSXWFNQNW1ZSaodk
   "/auth/register":
     post:
       summary: create new user
@@ -391,15 +404,15 @@ paths:
               example:
                 message: User created successfully
                 user:
-                  id: 9
+                  id: 11
                   username: nomads
                   email: nomads@nomads.com
-                  password_digest: "$2a$04$3IBoPH31Yue/djVKwIpZOuoJe.5dvyAUn7vmmAgqmBjCM4w7wmhU2"
+                  password_digest: "$2a$04$MWOqiRf8mZUOQc0vpUX0..y/1I8UIgD2QiRBluv2V.YGdfhF7HgTO"
                   age: 
-                  created_at: '2023-11-01T16:55:33.520Z'
-                  updated_at: '2023-11-01T16:55:33.520Z'
-                  jti: f422f77b-991c-41e0-a82f-db72a8d0d003
-                token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo5LCJleHAiOjE2OTk0NjI1MzN9.7xExOPEclbZOsq11PmVA4Fo955YmzQux08NFd8a73Vw
+                  created_at: '2023-11-03T12:38:37.691Z'
+                  updated_at: '2023-11-03T12:38:37.691Z'
+                  jti: a58e5d80-9a76-46e1-b254-2769dc99c6cd
+                token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMSwiZXhwIjoxNjk5NjE5OTE3fQ.wWmnVXdjqC9J8a_fW43IZ8E7w9tQ6hLGsmbIv2ccY8M
         '409':
           description: create new user with uniq email; return created user or error;
             return jwt auth token
@@ -431,7 +444,7 @@ paths:
         required: true
         schema:
           type: integer
-        example: 12
+        example: 14
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -483,7 +496,7 @@ paths:
             application/vnd.api+json:
               schema:
                 type: string
-              example: '{"data":[{"id":"15","type":"roles","links":{"self":"http://www.example.com/api/v1/roles/15"},"attributes":{"name":"user"},"relationships":{"user-role":{"links":{"self":"http://www.example.com/api/v1/roles/15/relationships/user-role","related":"http://www.example.com/api/v1/roles/15/user-role"}},"users":{"links":{"self":"http://www.example.com/api/v1/roles/15/relationships/users","related":"http://www.example.com/api/v1/roles/15/users"}}}}]}'
+              example: '{"data":[{"id":"18","type":"roles","links":{"self":"http://www.example.com/api/v1/roles/18"},"attributes":{"name":"user"},"relationships":{"user-role":{"links":{"self":"http://www.example.com/api/v1/roles/18/relationships/user-role","related":"http://www.example.com/api/v1/roles/18/user-role"}},"users":{"links":{"self":"http://www.example.com/api/v1/roles/18/relationships/users","related":"http://www.example.com/api/v1/roles/18/users"}}}}]}'
     post:
       summary: roles
       tags:
@@ -530,26 +543,6 @@ paths:
                 - message
               example:
                 message: Role rspec created successfully
-  "/api/v1/roles/{id}":
-    delete:
-      summary: roles
-      tags:
-      - Api::V1::Role
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-        example: 16
-      responses:
-        '204':
-          description: crud roles
-          content:
-            '':
-              schema:
-                type: string
-              example: ''
   "/api/v1/users/{user_id}/roles":
     get:
       summary: user role
@@ -573,7 +566,7 @@ paths:
         required: true
         schema:
           type: integer
-        example: 17
+        example: 18
       responses:
         '200':
           description: user role
@@ -581,4 +574,4 @@ paths:
             application/vnd.api+json:
               schema:
                 type: string
-              example: '{"data":[{"id":"18","type":"roles","links":{"self":"http://www.example.com/api/v1/roles/18"},"attributes":{"name":"user"},"relationships":{"user-role":{"links":{"self":"http://www.example.com/api/v1/roles/18/relationships/user-role","related":"http://www.example.com/api/v1/roles/18/user-role"}},"users":{"links":{"self":"http://www.example.com/api/v1/roles/18/relationships/users","related":"http://www.example.com/api/v1/roles/18/users"}}}}]}'
+              example: '{"data":[{"id":"19","type":"roles","links":{"self":"http://www.example.com/api/v1/roles/19"},"attributes":{"name":"user"},"relationships":{"user-role":{"links":{"self":"http://www.example.com/api/v1/roles/19/relationships/user-role","related":"http://www.example.com/api/v1/roles/19/user-role"}},"users":{"links":{"self":"http://www.example.com/api/v1/roles/19/relationships/users","related":"http://www.example.com/api/v1/roles/19/users"}}}}]}'

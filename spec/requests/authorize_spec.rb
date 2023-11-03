@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Users", type: :request do
+RSpec.describe "Successfull authorize test get all Users", type: :request do
   describe "GET /api/v1/users", openapi: {
     summary: 'list all users if user has role admin or author',
     description: 'list all users if user has role admin or author',
@@ -19,7 +19,7 @@ RSpec.describe "Users", type: :request do
 
 
   describe "GET /api/v1/users", openapi: {
-    summary: 'unauthorized',
+    summary: 'Unauthorized all users test',
     description: 'does not return users if user does not have role admin or author'
   } do
     let(:auth) {Authentication::Authentication.new}

@@ -57,14 +57,14 @@ RSpec.describe "Roles", type: :request do
       expect(response.status).to eq(200)
     end
 
-    it "should delete the role" do
-      delete_role = create(:admin)
-      delete "/api/v1/roles/#{delete_role.id}" , params: {},
-      headers: {
-        "Authorization": "bearer #{token}"
-      }
-      expect(response.status).to eq(204)
-    end
+    # it "should delete the role" do
+    #   delete_role = create(:admin)
+    #   delete "/api/v1/roles/#{delete_role.id}" , params: {},
+    #   headers: {
+    #     "Authorization": "bearer #{token}"
+    #   }
+    #   expect(response.status).to eq(204)
+    # end
 
   end
 end

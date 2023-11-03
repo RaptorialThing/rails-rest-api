@@ -6,9 +6,12 @@ RSpec.describe "Users", type: :request do
     description: 'list all users ordered by default',
   } do
     #remove/close this route in prod
-    let(:auth) {Authentication::Authentication.new}
-    let(:token) {auth.generate_token}
     it "returns a list of users" do
+      user = create(:user)
+      #user_author = user.roles
+      role = Role.find_or_create_by(name: "author")
+      unless user.roles.include? role then user.roles << role end
+      token = GenerateToken.generate_token(user)
       get api_v1_users_url, params: {}, headers: { "Authorization": "bearer #{token}"}
       expect(response.status).to eq(200)
     end
