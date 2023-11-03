@@ -1,5 +1,6 @@
 class Api::V1::UsersController < ApplicationController
   skip_before_action :authenticate_request, only: [:create]
+  before_action ->{ authorize_roles!(["admin","author"])}, only: [:index]
 
   def create_relationship
     if UserRole.exists?(user_id: params[:user_id], role_id: params[:role_id])
